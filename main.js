@@ -31,7 +31,16 @@ const createWindow = () => {
   let tray
 
 app.whenReady().then(() => {
-  const icon = nativeImage.createFromPath('assets/sync3.png')
+
+  let icon
+
+  if (process.platform === "win32") {
+    icon = nativeImage.createFromPath('assets/sync2.png')
+  } else {
+    icon = nativeImage.createFromPath('assets/sync3.png')
+  }
+  
+ 
   tray = new Tray(icon)
 
   // note: your contextMenu, Tooltip and Title code will go here!
