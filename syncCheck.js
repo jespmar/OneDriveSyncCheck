@@ -104,7 +104,7 @@ const doCheck = () => new Promise((resolve, reject) => {
       //console.log(result)
 
       if (error) {
-        dialog.showMessageBoxSync(null, {message: "error", type: "warning"})
+        dialog.showMessageBox(null, {message: "error", type: "warning"})
       }
       // do whatever with stdout
 

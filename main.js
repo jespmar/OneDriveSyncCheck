@@ -10,13 +10,19 @@ app.disableHardwareAcceleration()
 
 console.log(app.getPath('userData'))
 
-
 // include the Node.js 'path' module at the top of your file
 const path = require('path')
 
+
+let win
+
+
+
+
+
 // modify your existing createWindow() function
 const createWindow = () => {
-  const win = new BrowserWindow({
+   win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -45,13 +51,24 @@ console.log(process.platform)
 
   let tray
 
+  let folderStatus
+
   const getStatus = () => new Promise((resolve, reject) => {
 
-    resolve(folderStatus)
+
+    const check = setInterval(() => {
+
+      console.log("check")
+
+      if (folderStatus) {
+        clearInterval(check)
+        resolve(folderStatus)
+      }
+    }, 1000)
+
 
   })
 
-  let folderStatus
 
 app.whenReady().then(() => {
 
@@ -96,9 +113,7 @@ app.whenReady().then(() => {
 
   const folderWarnings = []
 
-
-  setInterval(() => {
-
+  const handleCheck = () => {
 
     console.log({folderWarnings})
 
@@ -127,6 +142,7 @@ app.whenReady().then(() => {
         if (newFolderWarnings.length > 0) {
           tray.setImage(newIcon)
           dialog.showMessageBoxSync(null, {message: "You have folders that is not syncing!", type: "warning"})
+          
         }
 
           
@@ -136,9 +152,22 @@ app.whenReady().then(() => {
 
         // HANDLE NO SYNC HERE
 
+        if (win) {
+          win.reload()
+        }
+
       }
 
+
     }))
+
+  }
+
+  handleCheck()
+
+  setInterval(() => {
+
+    handleCheck()
 
 
 
