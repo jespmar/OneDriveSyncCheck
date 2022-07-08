@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Tray, Menu, nativeImage, dialog } = require('electron')
+const { app, BrowserWindow, Tray, Menu, nativeImage, dialog, ipcMain } = require('electron')
 const os = require("os");
 const fs = require("fs")
 
@@ -20,7 +20,9 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+        nodeIntegration: true,
+        contextIsolation: false,
     }
   })
 
@@ -43,7 +45,23 @@ console.log(process.platform)
 
   let tray
 
+  const getStatus = () => new Promise((resolve, reject) => {
+
+    resolve(folderStatus)
+
+  })
+
+  let folderStatus
+
 app.whenReady().then(() => {
+
+
+  ipcMain.handle('status', async (event, someArgument) => {
+    const result = await getStatus()
+    return result
+  })
+
+
 
   let icon
   let successIconURL = "data:image/png;base64,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"
@@ -90,6 +108,8 @@ app.whenReady().then(() => {
 
     doCheck()
     .then((status => {
+
+      folderStatus = status;
 
       if(status.noSync.length > 0) {
 
