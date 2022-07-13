@@ -153,7 +153,7 @@ app.whenReady().then(() => {
         // HANDLE NO SYNC HERE
 
         if (win) {
-          win.reload()
+          //win.reload()
         }
 
       }

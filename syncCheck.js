@@ -14,15 +14,18 @@ const doCheck = () => new Promise((resolve, reject) => {
 
         let status = {
             sync: [],
-            noSync: []
+            noSync: [],
+            folderList: []
         }
     
         for (let dir of dirs) {
     
             if (folders.includes(dir)) {
                 status.sync.push(dir)
+                status.folderList.push({name: dir, sync: true})
               } else {
                 status.noSync.push(dir)
+                status.folderList.push({name: dir, sync: false})
               }
         }
 
@@ -33,7 +36,6 @@ const doCheck = () => new Promise((resolve, reject) => {
     let buffer = []
     let result = []
     let folders = []
-    let status
 
     const homeDir = os.homedir()
 
