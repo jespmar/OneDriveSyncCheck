@@ -1,0 +1,63 @@
+body {
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .red {
+  
+    background-color: rgba(255,0,0, 0.3);
+  
+  }
+  
+  li {
+    list-style-type: none;
+    padding: 5px;
+    margin-bottom: 3px;
+    font-size: 0.9rem;
+  }
+
+  .dialog {
+
+    padding: 1rem;
+    padding-top: 3px;
+  }
+
+  .button-group {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+  }
+
+  .icon {
+    margin-right: 6px;
+  }
+
+  .label {
+    padding-bottom: 3px;
+  }
+
+
+  .error-icon {
+    text-align: center;
+  }
+
+  button {
+    padding:7px;
+    font-size: 14pt;
+    border-radius: 5px;
+    border: 1px solid #999;
+    cursor: pointer;
+  }
+
+  .btn-blue {
+        
+    background-color: #4361ee;
+    border-color: #2b3f98;
+    color: #fdfdfd;
+}
+
+.btn-blue:hover {
+        
+    background-color: #2b3f98;;
+    border-color: #2b3f98;;
+    color: #fdfdfd;
+}

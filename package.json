@@ -22,18 +22,18 @@
     "electron": "^19.0.4"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-squirrel-startup": "^1.0.0",
+    "regedit": "^5.1.1"
   },
   "config": {
     "forge": {
-      "packagerConfig": {
-      },
+      "packagerConfig": {},
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
             "name": "onedrivesynccheck",
-            "author":"Jesper Martinsson",
+            "author": "Jesper Martinsson",
             "description": "my App"
           }
         },

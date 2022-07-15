@@ -2,6 +2,8 @@ const { app, BrowserWindow, Tray, Menu, nativeImage, dialog, ipcMain } = require
 const os = require("os");
 const fs = require("fs")
 
+const syncCheck = require("./syncChecker")
+
 const doCheck = require("./syncCheck");
 
 const { exec } = require('child_process');
@@ -15,16 +17,26 @@ const path = require('path')
 
 
 let win
+let dialogWin
 
 
 
 
 
 // modify your existing createWindow() function
-const createWindow = () => {
+const createWindow = (cursor) => {
+
+  const height = 600
+  const width = 374
+
    win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    show: false,
+    width,
+    height,
+    x: cursor.x - (width / 2),
+    y: cursor.y - height - 30,
+    titleBarStyle: "hidden",
+    titleBarOverlay: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
         nodeIntegration: true,
@@ -33,6 +45,32 @@ const createWindow = () => {
   })
 
   win.loadFile('index.html')
+
+}
+
+
+const createDialogWindow = (cursor) => {
+
+  const height = 300
+  const width = 600
+
+   dialogWin = new BrowserWindow({
+    width,
+    height,
+    maximizable: false,
+    minimizable: false,
+    thickFrame: true,
+    resizable: false,
+    frame: false,
+    titleBarStyle: "hidden",
+    alwaysOnTop: true,
+    webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false,
+    }
+  })
+
+  dialogWin.loadFile('custom-dialog.html')
 }
 
 console.log(process.platform)
@@ -51,7 +89,7 @@ console.log(process.platform)
 
   let tray
 
-  let folderStatus
+  let allTenants
 
   const getStatus = () => new Promise((resolve, reject) => {
 
@@ -60,11 +98,11 @@ console.log(process.platform)
 
       console.log("check")
 
-      if (folderStatus) {
+      if (allTenants) {
         clearInterval(check)
-        resolve(folderStatus)
+        resolve(allTenants)
       }
-    }, 1000)
+    }, 100)
 
 
   })
@@ -73,8 +111,15 @@ console.log(process.platform)
 app.whenReady().then(() => {
 
 
+
+
+  const { screen } = require('electron')
+
+
+
   ipcMain.handle('status', async (event, someArgument) => {
     const result = await getStatus()
+    win.show()
     return result
   })
 
@@ -107,7 +152,37 @@ app.whenReady().then(() => {
 
   tray.on("click", (event) => {
 
-    createWindow()
+    console.log(screen.getCursorScreenPoint())
+
+    if (!win) {
+      console.log("no window")
+      createWindow(screen.getCursorScreenPoint())
+      win.on('minimize',() => win.destroy());
+    } else {
+
+      if (win.isDestroyed()) {
+        console.log("the window is dead!")
+        createWindow(screen.getCursorScreenPoint())
+        win.on('minimize',() => win.destroy());
+      }
+
+      else if (win.isVisible()) {
+
+        console.log("Window visible, closing!")
+        win.destroy()
+
+      } else if (!win.isVisible()) {
+        win.show()
+      }
+
+    }
+
+  })
+
+
+  tray.on("right-click", (event) => {
+
+    app.quit()
 
   })
 
@@ -115,51 +190,83 @@ app.whenReady().then(() => {
 
   const handleCheck = () => {
 
-    console.log({folderWarnings})
-
     const newFolderWarnings = []
 
     let newIcon = nativeImage.createFromDataURL(failIconURL)
+    let successIcon = nativeImage.createFromDataURL(successIconURL)
 
-    doCheck()
-    .then((status => {
 
-      folderStatus = status;
 
-      if(status.noSync.length > 0) {
+    syncCheck.main()
+    .then((tenants) => {
 
-        for (folder of status.noSync) {
+      allTenants = tenants
 
-          if (!folderWarnings.includes(folder)) {
+      for (let tenant of tenants) {
 
-            newFolderWarnings.push(folder)
-            folderWarnings.push(folder)
+        for (let folder of tenant.foldersOnDisk) {
+
+          if (!folder.sync) {
+
+            if (!folderWarnings.includes(folder.name)) {
+              folderWarnings.push(folder.name)
+              newFolderWarnings.push(folder.name)
+            }
+
+
+          } else {
+
+            if (folderWarnings.includes(folder.name)) {
+
+              for (let i = 0; i < folderWarnings.length; i++) {
+
+                if (folderWarnings[i] === folder.name) folderWarnings.splice(i, 1)
+
+              }
+
+            }
 
           }
 
         }
 
-        if (newFolderWarnings.length > 0) {
-          tray.setImage(newIcon)
-          dialog.showMessageBoxSync(null, {message: "You have folders that is not syncing!", type: "warning"})
-          
-        }
+              // Check for deleted folder
+      for (let i = 0; i < folderWarnings.length; i++) {
 
-          
+        if (!tenant.foldersOnDiskString.includes(folderWarnings[i])) {
 
+          folderWarnings.splice(i,1)
 
-
-
-        // HANDLE NO SYNC HERE
-
-        if (win) {
-          //win.reload()
         }
 
       }
 
 
-    }))
+      }
+
+      if (newFolderWarnings.length > 0) {
+
+        tray.setImage(newIcon)
+        dialog.showMessageBoxSync(null, {
+          title: "Possible OneDrive synchronization error",
+          message: "We have noticed a possible Synchronization error within your OneDrive folders. Please take action to prevent possible data loss", 
+          buttons: ["Show Errors", "Close"],
+          cancelId: 1,
+          type: "warning"})
+        //createDialogWindow()
+
+      }
+
+
+
+      if (folderWarnings.length === 0) {
+        tray.setImage(successIcon)
+
+      }
+
+    })
+
+    console.log({folderWarnings})
 
   }
 
@@ -171,6 +278,6 @@ app.whenReady().then(() => {
 
 
 
-  }, 30000 )
+  }, 15000 )
   
 })

@@ -10,23 +10,31 @@ ipcRenderer.invoke('status', "").then((result) => {
   const syncDiv = document.getElementById("syncDiv")
   const noSyncDiv = document.getElementById("noSyncDiv")
 
-  for (let i = 0; i < result.folderList.length; i++) {
+  for (let tenant of result) {
 
-    let s = result.folderList[i]
+    const header = document.createElement("h3")
+    const headerNode = document.createTextNode(tenant.name);
+    header.appendChild(headerNode)
+    syncDiv.appendChild(header)
 
-    const li = document.createElement("li");
-    const img = document.createElement("img")
-    if (s.sync) img.src = "./assets/folder-cloud.png";
-    else {
-      img.src = "./assets/folder-fail.png";
-      li.classList.add("red")
+    for (let folder of tenant.foldersOnDisk) {
+
+      const li = document.createElement("li");
+      const img = document.createElement("img");
+      img.classList.add("icon")
+      if (folder.sync) img.src = "./assets/folder-cloud.png";
+      else {
+        img.src = "./assets/folder-fail.png";
+        li.classList.add("red")
+      }
+      img.width = 24
+      img.heigh = 24
+      const node = document.createTextNode(folder.name);
+      li.appendChild(img)
+      li.appendChild(node);
+      syncDiv.appendChild(li);
+  
     }
-    img.width = 24
-    img.heigh = 24
-    const node = document.createTextNode(s.name);
-    li.appendChild(img)
-    li.appendChild(node);
-    syncDiv.appendChild(li);
 
   }
 
