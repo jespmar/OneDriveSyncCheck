@@ -27,11 +27,11 @@ ipcRenderer.invoke('status', "").then((result) => {
       const img = document.createElement("img");
       img.classList.add("icon")
       if (folder.sync) {
-        img.src = "../../assets/folder-cloud.png";
+        img.src = "../../assets/folder_success.png";
         li.classList.add("normal")
       }
       else {
-        img.src = "../../assets/folder-fail.png";
+        img.src = "../../assets/folder_fail.png";
         li.classList.add("red")
       }
       img.width = 24
