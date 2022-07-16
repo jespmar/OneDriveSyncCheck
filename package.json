@@ -34,7 +34,8 @@
           "config": {
             "name": "onedrivesynccheck",
             "author": "Jesper Martinsson",
-            "description": "my App"
+            "description": "my App",
+            "loadingGif": "./assets/loading.gif"
           }
         },
         {
