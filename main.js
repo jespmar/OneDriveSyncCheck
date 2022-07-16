@@ -44,12 +44,13 @@ const createWindow = (cursor) => {
 
 const createDialogWindow = (cursor) => {
 
-  const height = 300
-  const width = 600
+  const height = 250
+  const width = 500
 
    dialogWin = new BrowserWindow({
     width,
     height,
+    useContentSize: true,
     maximizable: false,
     minimizable: false,
     thickFrame: true,
