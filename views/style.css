@@ -1,0 +1,125 @@
+body {
+    font-family: 'Roboto', sans-serif;
+  }
+  
+
+ 
+  
+  li {
+    list-style-type: none;
+    padding: 5px;
+    margin-bottom: 3px;
+    font-size: 0.9rem;
+  }
+
+  .dialog {
+
+    padding: 1rem;
+    padding-top: 3px;
+  }
+
+  .button-group {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+  }
+
+  .icon {
+    margin-right: 6px;
+  }
+
+  .row {
+    display: flex;
+    width: 95%;
+    justify-content: start;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 5px;
+    padding: 0.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .label {
+    display: inline-block;
+    font-size: 0.8rem;
+  }
+
+  .tenant {
+    margin-bottom: 0.7rem;
+  }
+
+  .nav {
+    font-family: 'Ubuntu', sans-serif;
+    width: 100%;
+    margin: 0px;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    padding: 10px;
+    background-color: #1d3557;
+    color: #fff;
+  }
+
+  .nav-bar {
+    display: flex;
+    justify-content: space-between;
+    width: 93%;
+    align-items: center;
+  }
+
+  .setting {
+
+  }
+
+  .main {
+    padding-top: 30px;
+  }
+
+
+  .error-icon {
+    text-align: center;
+  }
+
+  button {
+    padding:7px;
+    font-size: 14pt;
+    border-radius: 5px;
+    border: 1px solid #999;
+    cursor: pointer;
+  }
+
+  .btn-blue {
+        
+    background-color: #4361ee;
+    border-color: #2b3f98;
+    color: #fdfdfd;
+}
+
+.btn-blue:hover {
+        
+    background-color: #2b3f98;;
+    border-color: #2b3f98;;
+    color: #fdfdfd;
+}
+
+.red {
+  
+  background-color: #f43c4b;
+  font-weight: bold;
+  color: #fff;
+
+}
+
+.red:hover {
+
+  background-color: #dd3a47;
+
+}
+
+.normal:hover {
+  
+  color: #fff;
+  background-color: #4362ee;
+
+}

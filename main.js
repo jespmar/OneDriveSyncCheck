@@ -2,11 +2,7 @@ const { app, BrowserWindow, Tray, Menu, nativeImage, dialog, ipcMain } = require
 const os = require("os");
 const fs = require("fs")
 
-const syncCheck = require("./syncChecker")
-
-const doCheck = require("./syncCheck");
-
-const { exec } = require('child_process');
+const syncCheck = require("./helpers/syncChecker")
 
 app.disableHardwareAcceleration()
 
@@ -18,9 +14,6 @@ const path = require('path')
 
 let win
 let dialogWin
-
-
-
 
 
 // modify your existing createWindow() function
@@ -38,13 +31,13 @@ const createWindow = (cursor) => {
     titleBarStyle: "hidden",
     titleBarOverlay: false,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'views', 'preload.js'),
         nodeIntegration: true,
         contextIsolation: false,
     }
   })
 
-  win.loadFile('index.html')
+  win.loadFile('views/main/main.view.html')
 
 }
 
@@ -70,7 +63,7 @@ const createDialogWindow = (cursor) => {
     }
   })
 
-  dialogWin.loadFile('custom-dialog.html')
+  dialogWin.loadFile('views/dialog/dialog.view.html')
 }
 
 console.log(process.platform)
@@ -247,13 +240,8 @@ app.whenReady().then(() => {
       if (newFolderWarnings.length > 0) {
 
         tray.setImage(newIcon)
-        dialog.showMessageBoxSync(null, {
-          title: "Possible OneDrive synchronization error",
-          message: "We have noticed a possible Synchronization error within your OneDrive folders. Please take action to prevent possible data loss", 
-          buttons: ["Show Errors", "Close"],
-          cancelId: 1,
-          type: "warning"})
-        //createDialogWindow()
+
+        createDialogWindow()
 
       }
 
