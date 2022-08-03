@@ -180,7 +180,41 @@ app.whenReady().then(() => {
 
   })
 
-  const folderWarnings = []
+  const writeStateFile = (data) => {
+
+    console.log("Writing State File")
+
+    let package = JSON.stringify(data);
+    let p = path.join(app.getPath('userData'), "state.json")
+    console.log(p)
+    fs.writeFileSync(p, package, null, 2);
+
+  }
+
+  let folderWarnings = []
+  let folderWarningsObj = []
+  let hasError = false
+
+  const loadData = () => {
+
+    if (fs.existsSync(path.join(app.getPath('userData'), "state.json"))) {
+
+      console.log("Loading State File")
+      //file exists
+
+      fs.readFile(path.join(app.getPath('userData'), "state.json"), (err, data) => {
+        if (err) throw err;
+        let state = JSON.parse(data);
+        console.log(state);
+        folderWarningsObj = state.folderWarningsObj
+        folderWarnings = state.folderWarnings
+    });
+
+    }
+
+
+
+  }
 
   const handleCheck = () => {
 
@@ -191,8 +225,11 @@ app.whenReady().then(() => {
 
 
 
+
     syncCheck.main()
     .then((tenants) => {
+
+      // TODO: Break this down into smaller functions and move to its own file
 
       allTenants = tenants
 
@@ -203,7 +240,14 @@ app.whenReady().then(() => {
           if (!folder.sync) {
 
             if (!folderWarnings.includes(folder.name)) {
+              const f = {
+                name: folder.name,
+                tenant: tenant.name,
+                path: folder.path,
+                date: new Date().toISOString()
+              }
               folderWarnings.push(folder.name)
+              folderWarningsObj.push(f)
               newFolderWarnings.push(folder.name)
             }
 
@@ -214,7 +258,11 @@ app.whenReady().then(() => {
 
               for (let i = 0; i < folderWarnings.length; i++) {
 
-                if (folderWarnings[i] === folder.name) folderWarnings.splice(i, 1)
+                if (folderWarnings[i] === folder.name) {
+                  folderWarnings.splice(i, 1)
+                  folderWarningsObj.splice(i, 1)
+                  writeStateFile({folderWarnings,folderWarningsObj})
+                }
 
               }
 
@@ -230,6 +278,8 @@ app.whenReady().then(() => {
         if (!tenant.foldersOnDiskString.includes(folderWarnings[i])) {
 
           folderWarnings.splice(i,1)
+          folderWarningsObj.splice(i, 1)
+          writeStateFile({folderWarnings,folderWarningsObj})
 
         }
 
@@ -240,9 +290,20 @@ app.whenReady().then(() => {
 
       if (newFolderWarnings.length > 0) {
 
-        tray.setImage(newIcon)
-
         createDialogWindow()
+
+        writeStateFile({folderWarnings,folderWarningsObj})
+
+        console.log({folderWarnings})
+        console.log({folderWarningsObj})
+
+      }
+
+
+      if (folderWarnings.length > 0 && !hasError) {
+
+        tray.setImage(newIcon)
+        hasError = true
 
       }
 
@@ -250,22 +311,23 @@ app.whenReady().then(() => {
 
       if (folderWarnings.length === 0) {
         tray.setImage(successIcon)
+        hasError = false
 
       }
 
     })
 
-    console.log({folderWarnings})
 
-  }
+
+  }  
+
+  loadData()
 
   handleCheck()
 
   setInterval(() => {
 
     handleCheck()
-
-
 
   }, 15000 )
   

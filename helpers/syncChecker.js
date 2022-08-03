@@ -12,6 +12,7 @@ const main = async () => {
     for (let tenant of tenantRegistryData) {
 
 
+        // Exclude personal OneDrive
         if (!tenant.name.includes("OneDrive")) {
             let t = {
                 name: tenant.name,
@@ -46,6 +47,8 @@ const main = async () => {
 
 
     }
+
+    //console.log(tenants)
 
     return tenants
 
