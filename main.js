@@ -125,9 +125,9 @@ app.whenReady().then(() => {
 
 
   if (process.platform === "win32") {
-    icon = nativeImage.createFromPath(path.join(__dirname, "assets", "cloud_success.png"))
+    icon = nativeImage.createFromPath(path.join(__dirname, "assets", "success.png"))
   } else {
-    icon = nativeImage.createFromPath(path.join(__dirname, "assets", "cloud_success.png"))
+    icon = nativeImage.createFromPath(path.join(__dirname, "assets", "success.png"))
   }
   
  
@@ -220,8 +220,8 @@ app.whenReady().then(() => {
 
     const newFolderWarnings = []
 
-    let newIcon = nativeImage.createFromPath(path.join(__dirname, "assets", "cloud_fail.png"))
-    let successIcon = nativeImage.createFromPath(path.join(__dirname, "assets", "cloud_success.png"))
+    let newIcon = nativeImage.createFromPath(path.join(__dirname, "assets", "warn.png"))
+    let successIcon = nativeImage.createFromPath(path.join(__dirname, "assets", "success.png"))
 
 
 
