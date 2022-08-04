@@ -9,8 +9,7 @@ app.disableHardwareAcceleration()
 console.log(app.getPath('userData'))
 
 // include the Node.js 'path' module at the top of your file
-const path = require('path');
-const { fail } = require('assert');
+const path = require('path')
 
 
 let win
@@ -221,7 +220,7 @@ app.whenReady().then(() => {
 
     const newFolderWarnings = []
 
-    let newIcon = nativeImage.createFromDataURL(failIcon)
+    let newIcon = nativeImage.createFromPath(path.join(__dirname, "assets", "cloud_fail.png"))
     let successIcon = nativeImage.createFromPath(path.join(__dirname, "assets", "cloud_success.png"))
 
 
