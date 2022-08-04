@@ -1,5 +1,7 @@
 body {
     font-family: 'Roboto', sans-serif;
+    margin: 0px;
+    padding: 0px;
   }
   
 
@@ -51,14 +53,30 @@ body {
 
   .nav {
     font-family: 'Ubuntu', sans-serif;
+    padding: 10px;
+    background-color: #396aaf;
+    color: #fff;
+  }
+
+  .header {
     width: 100%;
     margin: 0px;
     position: fixed;
     top: 0px;
     left: 0px;
+
+  }
+
+
+  .alert {
+    margin-top:44px;
+    font-family: 'Roboto', sans-serif;
+    width: 100%;
     padding: 10px;
-    background-color: #1d3557;
-    color: #fff;
+    color: rgb(255, 36, 36);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .nav-bar {
@@ -73,7 +91,15 @@ body {
   }
 
   .main {
-    padding-top: 30px;
+    padding-left: 10px;
+  }
+
+  .alert-warn {
+    background-color: #ff4555fa;
+  }
+
+  .alert-success {
+    background-color: #4fb682fa;
   }
 
 
@@ -115,6 +141,11 @@ body {
 
   background-color: #dd3a47;
 
+}
+
+.alert-text {
+  font-size: 0.8rem;
+  color: #fff;
 }
 
 .normal:hover {

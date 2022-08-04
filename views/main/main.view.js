@@ -10,7 +10,25 @@ ipcRenderer.invoke('status', "").then((result) => {
   const syncDiv = document.getElementById("syncDiv")
   const noSyncDiv = document.getElementById("noSyncDiv")
 
-  for (let tenant of result) {
+  const alert = document.getElementById("alert")
+  const alertText = document.getElementById("alert-text")
+ 
+
+  if (result.hasError) {
+
+    alert.classList.add("alert-warn")
+    info = document.createTextNode("One or more folders are not syncing")
+
+  } else {
+
+    alert.classList.add("alert-success")
+    info = document.createTextNode("Everything is syncing")
+
+  }
+
+  alertText.appendChild(info)
+
+  for (let tenant of result.tenants) {
 
     const header = document.createElement("h4")
     header.classList.add("tenant")

@@ -10,17 +10,29 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Ubuntu:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,1,0" />
 <link rel="stylesheet" href="../style.css">
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+/>
   <script src="main.view.js"></script>
   <body>
-    <nav class="nav">
-      <div class="nav-bar">
-        <div>OneDrive Sync Monitor</div>
-        <div><span class="material-symbols-outlined">
-          settings
-          </span></div>
-      </div>
-    </nav>
-    <div class="main" id="syncDiv">
+    <div class="animate__fadeIn">
+    <div class="header">
+      <nav class="nav">
+        <div class="nav-bar">
+          <div>OneDrive Sync Monitor</div>
+          <div><span class="material-symbols-outlined">
+            settings
+            </span></div>
+        </div>
+      </nav>
     </div>
+    <div id="alert" class="alert animate__fadeIn">
+      <div id="alert-text" class="alert-text"></div>
+    </div>
+    <div class="main animate__fadeIn" id="syncDiv">
+    </div>
+    </div>
+
   </body>
 </html>
