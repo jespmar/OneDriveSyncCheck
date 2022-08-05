@@ -5,6 +5,7 @@ const fs = require("fs")
 const syncCheck = require("./helpers/syncChecker")
 
 app.disableHardwareAcceleration()
+app.setName("OneDrive Sync Tool (OST)")
 
 console.log(app.getPath('userData'))
 
