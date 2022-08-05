@@ -36,7 +36,12 @@ ipcRenderer.invoke('status', "").then((result) => {
     header.appendChild(headerNode)
     syncDiv.appendChild(header)
 
-    for (let folder of tenant.foldersOnDisk) {
+
+    const folders = Object.keys(tenant.foldersOnDisk)
+
+    for (let f of folders) {
+
+      let folder = tenant.foldersOnDisk[f]
 
       const li = document.createElement("div");
       li.classList.add("row")

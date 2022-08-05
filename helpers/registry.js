@@ -5,6 +5,8 @@ const path = require("path")
 // Get list of tenants from registry
 async function main() {
   const listResult = await regedit.list('HKCU\\SOFTWARE\\Microsoft\\OneDrive\\Accounts\\Business1\\Tenants')
+
+  //console.log(listResult)
  
   return listResult
 
@@ -49,6 +51,8 @@ const doItAll = async () => {
     objectKeys = Object.keys(listResult)
     //console.log(result)
     const result = await sortTenants(listResult[objectKeys[0]].keys)
+
+    //console.log(result)
 
     return result
 

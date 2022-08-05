@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Tray, Menu, nativeImage, dialog, ipcMain } = require('electron')
+const { app, BrowserWindow, Tray, Menu, nativeImage, dialog, ipcMain, Notification } = require('electron')
 const os = require("os");
 const fs = require("fs")
 
@@ -205,29 +205,6 @@ app.whenReady().then(() => {
 
   }
 
-  let folderWarnings = []
-  let folderWarningsObj = []
-
-  const loadData = () => {
-
-    if (fs.existsSync(path.join(app.getPath('userData'), "state.json"))) {
-
-      console.log("Loading State File")
-      //file exists
-
-      fs.readFile(path.join(app.getPath('userData'), "state.json"), (err, data) => {
-        if (err) throw err;
-        let state = JSON.parse(data);
-        console.log(state);
-        folderWarningsObj = state.folderWarningsObj
-        folderWarnings = state.folderWarnings
-    });
-
-    }
-
-
-
-  }
 
   const handleCheck = () => {
 
@@ -239,106 +216,87 @@ app.whenReady().then(() => {
 
 
 
-    syncCheck.main()
-    .then((tenants) => {
+    syncCheck.run(app.getPath('userData'))
+    .then(() => {
 
-      // TODO: Break this down into smaller functions and move to its own file
+      let sendNotification = false
+      let stateChanged = false
+      let errors = false
 
-      allTenants = tenants
+      // Get current state
+      if (fs.existsSync(path.join(app.getPath('userData'), "state.json"))) {
+        
+        console.log("Loading State File")
+        //file exists
+        // Load state
 
-      for (let tenant of tenants) {
+        fs.readFile(path.join(app.getPath('userData'), "state.json"), (err, data) => {
+            if (err) throw err;
+            state = JSON.parse(data);
+            console.log(state);
+            allTenants = state
 
-        for (let folder of tenant.foldersOnDisk) {
+            // Do checks against state
+            
+            for (let tenant of state) {
+              // Loop over tenants
 
-          if (!folder.sync) {
+              const folders = Object.keys(tenant.foldersOnDisk)
 
-            if (!folderWarnings.includes(folder.name)) {
-              const f = {
-                name: folder.name,
-                tenant: tenant.name,
-                path: folder.path,
-                date: new Date().toISOString()
-              }
-              folderWarnings.push(folder.name)
-              folderWarningsObj.push(f)
-              newFolderWarnings.push(folder.name)
-             // if (win || !win.isDestroyed()) win.reload()
-            }
+              // Loop over folders
+
+              for (let folder of folders) {
+
+                // Check if folder is not syncing and user has not ben notified
+
+                if (!tenant.foldersOnDisk[folder].sync) {
+
+                  errors = true
+
+                  if (!hasError) {
+                    hasError = true
+                    tray.setImage(newIcon)
+                  }
 
 
-          } else {
+                  if (!tenant.foldersOnDisk[folder].userNotified) {
 
-            if (folderWarnings.includes(folder.name)) {
+                  sendNotification = true
+                  stateChanged = true
+                  tenant.foldersOnDisk[folder].userNotified = true
 
-              for (let i = 0; i < folderWarnings.length; i++) {
+                  }
 
-                if (folderWarnings[i] === folder.name) {
-                  folderWarnings.splice(i, 1)
-                  folderWarningsObj.splice(i, 1)
-                  writeStateFile({folderWarnings,folderWarningsObj})
-                 // if (win || !win.isDestroyed()) win.reload()
                 }
 
               }
 
+
+
             }
 
-          }
+            if (stateChanged) writeStateFile(state)
 
-        }
+            console.log("User needs to be notified")
+            if (sendNotification) createDialogWindow()
 
-              // Check for deleted folder
-      for (let i = 0; i < folderWarnings.length; i++) {
-
-        if (!tenant.foldersOnDiskString.includes(folderWarnings[i])) {
-
-          folderWarnings.splice(i,1)
-          folderWarningsObj.splice(i, 1)
-          writeStateFile({folderWarnings,folderWarningsObj})
-         // if (win || !win.isDestroyed()) win.reload()
-
-        }
-
-      }
+            if (hasError && !errors) {
+              hasError = false
+              tray.setImage(successIcon)
+            }
 
 
-      }
-
-      if (newFolderWarnings.length > 0) {
-
-        createDialogWindow()
-
-        writeStateFile({folderWarnings,folderWarningsObj})
-       // if (win || !win.isDestroyed()) win.reload()
-
-        console.log({folderWarnings})
-        console.log({folderWarningsObj})
-
-      }
+        });
 
 
-      if (folderWarnings.length > 0 && !hasError) {
-
-        tray.setImage(newIcon)
-        hasError = true
-
-      }
-
-
-
-      if (folderWarnings.length === 0) {
-        tray.setImage(successIcon)
-        hasError = false
-
-      }
+    }
 
     })
 
 
-
   }  
 
-  loadData()
+  //loadData()
 
   handleCheck()
 
